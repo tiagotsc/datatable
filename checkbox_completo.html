@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Datatable - Exemplo com checkbox e botões</title>
+    <script src="datatable/js/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="datatable/css/datatables.min.css"/>
+    <script type="text/javascript" src="datatable/js/datatables.min.js"></script>
+    
+    <!-- PACOTE NECESSÁRO PARA MANIPULAR CHECKBOX-->
+    <link rel="stylesheet" type="text/css" href="datatable/css/select.dataTables.min.css"/>
+    <script type="text/javascript" src="datatable/js/dataTables.select.min.js"></script>
+    <link type="text/css" href="datatable/css/dataTables.checkboxes.css" rel="stylesheet" />
+    <script type="text/javascript" src="datatable/js/dataTables.checkboxes.min.js"></script>
+
+    <!--PACOTE EXPORTAR DADOS-->
+    <link type="text/css" href="datatable/css/buttons.dataTables.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="datatable/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="datatable/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="datatable/js/jszip.min.js"></script>
+    <script type="text/javascript" src="datatable/js/pdfmake.min.js"></script>
+    <script type="text/javascript" src="datatable/js/vfs_fonts.js"></script>
+    <script type="text/javascript" src="datatable/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="datatable/js/buttons.print.min.js"></script>
+
+    <!--PACOTE PARA OCULTAR / EXIBIR COLUNA-->
+    <script type="text/javascript" src="datatable/js/buttons.colVis.min.js"></script>
+</head>
+
+<body>
+    <form id="frm-example" action="/path/to/your/script.php" method="POST">
+        <div>
+            <label for="nome">Nome</label><br>
+            <input type="text" id="nome" name="nome"/><br>
+            <label for="email">Email</label><br>
+            <input type="text" id="email" name="email"/><br>
+            <label for="status">Status</label><br>
+            <select id="status" name="status">
+                <option value="A">Ativo</option>
+                <option value="I">Inativo</option>
+            </select><br><br>
+        </div>
+        <table class="display" id="example" width="100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Phone</th>
+                    <th>City</th>
+                    <th>Zip</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+        </table>
+
+        <hr>
+        
+        <p>Press <b>Submit</b> and check console for URL-encoded form data that would be submitted.</p>
+        
+        <p><button>Submit</button></p>
+        
+        <p><b>Selected rows data:</b></p>
+        <pre id="example-console-rows"></pre>
+        
+        <p><b>Form data as submitted to the server:</b></p>
+        <pre id="example-console-form"></pre>
+        
+    </form>
+</body>
+<script type="text/javascript">
+
+$(document).ready(function() {
+    // Oculta mensagem de alerta do Datatable
+    //$.fn.dataTable.ext.errMode = 'none';
+    
+    var table = $('#example').DataTable( {
+        "language": { // Traduz o plugin
+            "url": "datatable/language/dataTables.pt-br.json", // Arquivo de tradução
+            select: { // Tradução encima das operações de seleção de linha
+                rows: { // Tradução para o Footer da tabela
+                    _: "Você selecionou %d linhas", // Footer -> Tradução para mais de uma linha selecionada
+                    0: "Clique na linha para selecionar", // Footer -> Tradução para nenhuma linha selecionada
+                    1: "Apenas 1 linha foi selecionada" // Footer -> Tradução para apenas uma linha selecionada
+                }
+            },
+            buttons: { // Tradução encima da mensagem do botão de cópia
+                copyTitle: 'Tabela copiada',
+                copySuccess: {
+                    _: '%d linhas copiadas',
+                    1: '1 linha copiada'
+                }
+            }
+        },
+        "ajax": {
+            "url": 'arrays.json',
+            "type": 'POST',
+            "data": {
+                "nome": $("#nome").val(),
+                "email": $("#email").val(),
+                "status": $("#status").val()
+            }
+        },
+        dom: 'Bfrtip', // Ativa opções de exportações da tabela
+        select: true, // Somente as linhas selecionadas (Usado para ação de exportar)
+        buttons: [ // Configura os botões que serão exibidos
+            {
+                extend: 'colvis', // Define botão de exibir / ocultar coluna
+                text: 'Colunas'
+            },
+            {
+                extend: 'copy', // Define botão de copiar tabela
+                text: 'Copiar tabela', // Altera o texto do botão
+                exportOptions: { // Opções ao executar ação
+                    // Define as colunas que participarão da ação
+                    columns: [1,2,3,4,5], // Exemplo: columns: [ 1,2,3 : ':visible'] ou columns: [ 1,2,3 ] ou columns: ':visible'
+                    modifier: { // Modificações antes da ação
+                        selected: null // Possibilita que todas as linhas seja copiadas ou somente as selecionadas
+                    }
+                }
+            }, 
+            /*'csv',*/ 
+            {
+                extend: 'excel', // Define botão de gerar excel
+                text: 'Exportar excel',
+                exportOptions: {
+                    columns: [1,2,3,4,5],
+                    modifier: {
+                        selected: null
+                    }
+                }
+            }, 
+            {
+                extend: 'pdf', // Define botão de gerar PDF
+                text: 'Exportar PDF',
+                exportOptions: {
+                    columns: [1,2,3,4,5],
+                    modifier: {
+                        selected: null
+                    }
+                }
+            }, 
+            {
+                extend: 'print', // Define botão de imprimir
+                text:'Imprimir',
+                exportOptions: {
+                    columns: [1,2,3,4,5],
+                    modifier: {
+                        selected: null
+                    }
+                }
+            }
+        ],
+        'columnDefs': [
+         {
+            'targets': 0,
+            'data': 'DT_RowId',
+            "visible": true, // Exibe / Oculta coluna
+            'checkboxes': {
+               'selectRow': true
+            }
+         },
+         {
+            targets: 1, // Index / posiciona coluna e tem que ser de acordo com a quantidade de colunas da tabela | Começa em 0
+            data: 'first_name', // Campo vindo do json ('Campo tabela banco')
+            // dt[-head|-body]-POSICAO | head -> Cabeçalho | body -> Linha | POSICAO -> ('left','center','right','justify','nowrap')
+            // Exemplo: dt-right -> Cabeçalho e linhas direita | dt-body-left -> Linhas esquerda
+            className: 'dt-body-center' // Centraliza o conteúdo da TD
+         },
+         {
+            targets: 2, 
+            "visible": true,
+            data: 'last_name',
+            className: 'dt-body-center' // Centraliza o conteúdo da TD
+         },
+         {
+            targets: 3,
+            data: 'phone',
+            className: 'dt-body-center' // Centraliza o conteúdo da TD
+         },
+         {
+            targets: 4,
+            data: 'city',
+            className: 'dt-body-center' // Centraliza o conteúdo da TD
+         },
+         {
+            targets: 5,
+            data: 'zip',
+            className: 'dt-body-center' // Centraliza o conteúdo da TD
+         },
+         {
+            'targets': 6,
+            data:   'id',
+            render: function ( data, type, row ) {
+                if ( type === 'display' ) {
+                    return '<a href="#" idEdit="'+data+'" class="editar">Editar</a><a idDel="'+data+'" href="#" class="apagar">Apagar</a>';
+                }
+                return data;
+            },
+            className: 'dt-body-center' // Centraliza o conteúdo da TD
+         }
+        ],
+        select: { // 'style' -> Tipo de seleção do checkbox ('api','single','multi','os','multi+shift') default ('os')
+            style:    'multi+shift' // Torna o checkbox multi selecionável através da tecla 'SHIFT'
+        },
+        'order': [[1, 'desc']]
+    } );
+    $('#example tbody').on( 'click', '.editar', function (event) {
+        event.preventDefault();
+        alert('Editar '+$(this).attr('idEdit'));
+    } );
+    $('#example tbody').on( 'click', '.apagar', function (event) {
+        event.preventDefault();
+        alert('Apagar '+$(this).attr('idDel'));
+    } );
+
+    // Recarrega tabela
+    //table.ajax.reload();
+
+    // Handle form submission event 
+   $('#frm-example').on('submit', function(e){
+        var form = this;
+        
+        // Pega todas as linhas com checkbox marcados
+        var rows_selected = table.column(0).checkboxes.selected();
+
+        // Iterate over all selected checkboxes
+        $.each(rows_selected, function(index, rowId){
+            // Create a hidden element 
+            $(form).append(
+                $('<input>')
+                    .attr('type', 'hidden')
+                    .attr('name', 'id[]')
+                    .val(rowId)
+            );
+        });
+        table.ajax.reload();
+        // FOR DEMONSTRATION ONLY
+        // The code below is not needed in production
+        
+        // Output form data to a console     
+        $('#example-console-rows').text(rows_selected.join(","));
+        
+        // Output form data to a console     
+        $('#example-console-form').text($(form).serialize());
+        
+        // Remove added elements
+        $('input[name="id\[\]"]', form).remove();
+        
+        // Prevent actual form submission
+        e.preventDefault();
+    });  
+} );
+
+function dump(obj) {
+    var out = '';
+    for (var i in obj) {
+        out += i + ": " + obj[i] + "\n";
+    }
+
+    alert(out);
+
+    // or, if you wanted to avoid alerts...
+
+    var pre = document.createElement('pre');
+    pre.innerHTML = out;
+    document.body.appendChild(pre)
+}
+</script>
+</html>

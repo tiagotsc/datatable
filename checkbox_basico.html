@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Title of the document</title>
+    <script src="datatable/js/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="datatable/css/datatables.min.css"/>
+    <script type="text/javascript" src="datatable/js/datatables.min.js"></script>
+
+    <!-- PACOTE NECESSÁRO PARA MANIPULAR CHECKBOX-->
+    <link rel="stylesheet" type="text/css" href="datatable/css/select.dataTables.min.css"/>
+    <script type="text/javascript" src="datatable/js/dataTables.select.min.js"></script>
+    <link type="text/css" href="datatable/css/dataTables.checkboxes.css" rel="stylesheet" />
+    <script type="text/javascript" src="datatable/js/dataTables.checkboxes.min.js"></script>
+    
+</head>
+
+<body>
+        <form id="frm-example" action="/path/to/your/script.php" method="POST">
+
+            <table id="example" class="display" cellspacing="0" width="100%">
+               <thead>
+                  <tr>
+                     <th></th>
+                     <th>Name</th>
+                     <th>Position</th>
+                     <th>Office</th>
+                     <th>Extn</th>
+                     <th>Start date</th>
+                     <th>Salary</th>
+                  </tr>
+               </thead>
+               <tfoot>
+                  <tr>
+                     <th></th>
+                     <th>Name</th>
+                     <th>Position</th>
+                     <th>Office</th>
+                     <th>Age</th>
+                     <th>Start date</th>
+                     <th>Salary</th>
+                  </tr>
+               </tfoot>
+            </table>
+            
+            <hr>
+            
+            <p>Press <b>Submit</b> and check console for URL-encoded form data that would be submitted.</p>
+            
+            <p><button>Submit</button></p>
+            
+            <p><b>Selected rows data:</b></p>
+            <pre id="example-console-rows"></pre>
+            
+            <p><b>Form data as submitted to the server:</b></p>
+            <pre id="example-console-form"></pre>
+            
+        </form>
+</body>
+<script type="text/javascript">
+function dump(obj) {
+    var out = '';
+    for (var i in obj) {
+        out += i + ": " + obj[i] + "\n";
+    }
+
+    alert(out);
+
+    // or, if you wanted to avoid alerts...
+
+    var pre = document.createElement('pre');
+    pre.innerHTML = out;
+    document.body.appendChild(pre)
+}
+
+$(document).ready(function() {
+    $.fn.dataTable.ext.errMode = 'none';
+    /*$('#example').DataTable( {
+        "ajax": 'arrays.json',
+        columns: [
+            {
+                data:   "id",
+                render: function ( data, type, row ) {
+                    if ( type === 'display' ) {
+                        return '<input  type="checkbox" name="marcados[]" value="'+data+'" class="editor-active">';
+                    }
+                    return data;
+                },
+                className: "select-checkbox"
+            },
+            { data: "first_name" },
+            { data: "last_name" },
+            { data: "phone" },
+            { data: "city" },
+            { data: "zip" },
+            {
+                data:   "id",
+                render: function ( data, type, row ) {
+                    if ( type === 'display' ) {
+                        return '<a href="#" idEdit="'+data+'" class="editar">Editar</a><a idDel="'+data+'" href="#" class="apagar">Apagar</a>';
+                    }
+                    return data;
+                },
+                className: "dt-body-center"
+            }
+        ],
+        select: {
+            style:    'os',
+            selector: 'td:first-child'
+        },
+    } );
+    $('#example tbody').on( 'click', '.editar', function () {
+        alert('Editar '+$(this).attr('idEdit'));
+    } );
+    $('#example tbody').on( 'click', '.apagar', function () {
+        alert('Apagar '+$(this).attr('idDel'));
+    } );*/
+    $(document).ready(function() {
+   var table = $('#example').DataTable({
+        'ajax': 'dados.json',
+        'columnDefs': [
+         {
+            'targets': 0,
+            'checkboxes': {
+               'selectRow': true
+            }
+         },
+         /*{
+            'targets': 6,
+            'checkboxes': {
+               'selectRow': true
+            }
+         }*/
+        ],
+        'select': {
+         'style': 'multi+shift'
+        },
+        'order': [[1, 'asc']]
+   });
+   
+   // Handle form submission event 
+   $('#frm-example').on('submit', function(e){
+        var form = this;
+        
+        var rows_selected = table.column(0).checkboxes.selected();
+        dump(rows_selected);
+        // Iterate over all selected checkboxes
+        $.each(rows_selected, function(index, rowId){
+            // Create a hidden element 
+            $(form).append(
+                $('<input>')
+                    .attr('type', 'hidden')
+                    .attr('name', 'id[]')
+                    .val(rowId)
+            );
+        });
+
+        // FOR DEMONSTRATION ONLY
+        // The code below is not needed in production
+        
+        // Output form data to a console     
+        $('#example-console-rows').text(rows_selected.join(","));
+        
+        // Output form data to a console     
+        $('#example-console-form').text($(form).serialize());
+        
+        // Remove added elements
+        $('input[name="id\[\]"]', form).remove();
+        
+        // Prevent actual form submission
+        e.preventDefault();
+    });   
+    });
+} );
+</script>
+</html>

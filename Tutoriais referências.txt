@@ -1,0 +1,27 @@
+Carregando via json
+
+https://datatables.net/examples/data_sources/ajax
+
+Passando parâmetros para carregar via json
+
+https://datatables.net/reference/option/ajax.data
+
+Botões e checkbox:
+
+Botão
+
+https://datatables.net/examples/ajax/null_data_source.html
+
+Multiplos botões
+
+https://datatables.net/examples/basic_init/multi_col_sort.html
+
+Checkbox
+
+https://datatables.net/extensions/select/examples/initialisation/checkbox.html
+https://editor.datatables.net/examples/api/checkbox.html
+
+Tutorial Datatable checkbox multipla seleção
+
+https://jsfiddle.net/gyrocode/snqw56dw/
+https://www.gyrocode.com/projects/jquery-datatables-checkboxes/

@@ -127,7 +127,8 @@ $(document).ready(function() {
             /*'csv',*/ 
             {
                 extend: 'excel', // Define botão de gerar excel
-                text: 'Exportar excel',
+                text: 'Exportar excel', // Nomeia o botão
+                filename: 'relatorio', // Define o nome do arquivo que será exportado
                 exportOptions: {
                     columns: [1,2,3,4,5],
                     modifier: {
@@ -138,6 +139,7 @@ $(document).ready(function() {
             {
                 extend: 'pdf', // Define botão de gerar PDF
                 text: 'Exportar PDF',
+                filename: 'tabela',
                 exportOptions: {
                     columns: [1,2,3,4,5],
                     modifier: {
@@ -210,6 +212,8 @@ $(document).ready(function() {
         },
         'order': [[1, 'desc']]
     } );
+
+    //table.buttons().disable(); // Desabilita botões
 
     $('#example tbody').on( 'click', '.editar', function (event) {
         event.preventDefault();

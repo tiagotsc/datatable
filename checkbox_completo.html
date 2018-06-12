@@ -25,6 +25,10 @@
 
     <!--PACOTE PARA OCULTAR / EXIBIR COLUNA-->
     <script type="text/javascript" src="datatable/js/buttons.colVis.min.js"></script>
+
+    <!--MODAL E FORM EDITOR-->
+    <link type="text/css" href="https://editor.datatables.net/extensions/Editor/css/editor.dataTables.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js"></script>
 </head>
 
 <body>
@@ -73,7 +77,6 @@
 $(document).ready(function() {
     // Oculta mensagem de alerta do Datatable
     //$.fn.dataTable.ext.errMode = 'none';
-    
     var table = $('#example').DataTable( {
         "language": { // Traduz o plugin
             "url": "datatable/language/dataTables.pt-br.json", // Arquivo de tradução
@@ -191,9 +194,9 @@ $(document).ready(function() {
          {
             'targets': 6,
             data:   'id',
-            render: function ( data, type, row ) {
+            render: function ( data, type, row ) { 
                 if ( type === 'display' ) {
-                    return '<a href="#" idEdit="'+data+'" class="editar">Editar</a><a idDel="'+data+'" href="#" class="apagar">Apagar</a>';
+                    return '<a href="#" idEdit="'+data+'" class="editar">Editar</a><a idDel="'+data+'" titulo="'+row.first_name+'" href="#" class="apagar">Apagar</a>';
                 }
                 return data;
             },
@@ -205,13 +208,27 @@ $(document).ready(function() {
         },
         'order': [[1, 'desc']]
     } );
+
     $('#example tbody').on( 'click', '.editar', function (event) {
         event.preventDefault();
         alert('Editar '+$(this).attr('idEdit'));
     } );
-    $('#example tbody').on( 'click', '.apagar', function (event) {
+    /*$('#example tbody').on( 'click', '.apagar', function (event) {
         event.preventDefault();
         alert('Apagar '+$(this).attr('idDel'));
+    } );*/
+
+    /* APAGAR VIA AJAX */
+    $('#example tbody').on( 'click', '.apagar', function (event) {
+        event.preventDefault();
+        //alert('Apagar '+$(this).attr('idDel'));
+        var r = confirm("Deseja apagar a demanda "+$(this).attr('titulo')+"?");
+        if (r == true) {
+            table
+            .row( $(this).parents('tr') )
+            .remove()
+            .draw();
+        }
     } );
 
     // Recarrega tabela

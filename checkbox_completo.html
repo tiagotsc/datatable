@@ -95,14 +95,16 @@ $(document).ready(function() {
                 }
             }
         },
+        "processing": true, // Ativa mensagem de processando
+		//oLanguage: {sProcessing: "<div id='loader'>TESTE</div>"}, // Personaliza mensagem de processando
         "ajax": {
             "url": 'arrays.json',
             "type": 'POST',
-            "data": {
-                "nome": $("#nome").val(),
-                "email": $("#email").val(),
-                "status": $("#status").val()
-            }
+            "data": function(data){ // Criando a function ele pega os dados do inputs dinamicamente
+			   data.nome = $("#nome").val();
+               data.email = $("#email").val();
+               data.status = $("#status").val();
+			}
         },
         dom: 'Bfrtip', // Ativa opções de exportações da tabela
         select: true, // Somente as linhas selecionadas (Usado para ação de exportar)

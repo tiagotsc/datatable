@@ -75,46 +75,6 @@ function dump(obj) {
 
 $(document).ready(function() {
     $.fn.dataTable.ext.errMode = 'none';
-    /*$('#example').DataTable( {
-        "ajax": 'arrays.json',
-        columns: [
-            {
-                data:   "id",
-                render: function ( data, type, row ) {
-                    if ( type === 'display' ) {
-                        return '<input  type="checkbox" name="marcados[]" value="'+data+'" class="editor-active">';
-                    }
-                    return data;
-                },
-                className: "select-checkbox"
-            },
-            { data: "first_name" },
-            { data: "last_name" },
-            { data: "phone" },
-            { data: "city" },
-            { data: "zip" },
-            {
-                data:   "id",
-                render: function ( data, type, row ) {
-                    if ( type === 'display' ) {
-                        return '<a href="#" idEdit="'+data+'" class="editar">Editar</a><a idDel="'+data+'" href="#" class="apagar">Apagar</a>';
-                    }
-                    return data;
-                },
-                className: "dt-body-center"
-            }
-        ],
-        select: {
-            style:    'os',
-            selector: 'td:first-child'
-        },
-    } );
-    $('#example tbody').on( 'click', '.editar', function () {
-        alert('Editar '+$(this).attr('idEdit'));
-    } );
-    $('#example tbody').on( 'click', '.apagar', function () {
-        alert('Apagar '+$(this).attr('idDel'));
-    } );*/
     $(document).ready(function() {
    var table = $('#example').DataTable({
         'ajax': 'dados.json',

@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <title>Datatable - Exemplo com checkbox e botões</title>
     <script src="datatable/js/jquery-3.3.1.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="datatable/css/datatables.min.css"/>
-    <script type="text/javascript" src="datatable/js/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="datatable/DataTables/datatables.min.css"/>
+    <script type="text/javascript" src="datatable/Datatables/datatables.min.js"></script>
     
     <!-- PACOTE NECESSÁRO PARA MANIPULAR CHECKBOX-->
     <link rel="stylesheet" type="text/css" href="datatable/css/select.dataTables.min.css"/>
@@ -25,10 +25,6 @@
 
     <!--PACOTE PARA OCULTAR / EXIBIR COLUNA-->
     <script type="text/javascript" src="datatable/js/buttons.colVis.min.js"></script>
-
-    <!--MODAL E FORM EDITOR-->
-    <link type="text/css" href="https://editor.datatables.net/extensions/Editor/css/editor.dataTables.min.css" rel="stylesheet" />
-    <script type="text/javascript" src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js"></script>
 </head>
 
 <body>
@@ -73,7 +69,6 @@
     </form>
 </body>
 <script type="text/javascript">
-
 $(document).ready(function() {
     // Oculta mensagem de alerta do Datatable
     //$.fn.dataTable.ext.errMode = 'none';
@@ -185,6 +180,14 @@ $(document).ready(function() {
             data: 'phone',
             className: 'dt-body-center' // Centraliza o conteúdo da TD
          },
+         {
+            targets: 3,
+            data: 'FAROL', render: function (data, type, row) { // Manipupa o conteúdo retornado
+                return type === 'display' ? /*'export'*/
+                '(21)'+data: ''; // Possibilita criar mascara encima do conteúdo
+            },
+            className: 'dt-body-center' 
+            },
          {
             targets: 4,
             data: 'city',

@@ -25,6 +25,9 @@
 
     <!--PACOTE PARA OCULTAR / EXIBIR COLUNA-->
     <script type="text/javascript" src="datatable/js/buttons.colVis.min.js"></script>
+	
+	<!--CONFIGURA DATA PARA ORDENAÇÃO NAS COLUNAS-->
+	<script type="text/javascript" src="datatable/js/date-uk.js"></script>
 </head>
 
 <body>
@@ -49,6 +52,7 @@
                     <th>Phone</th>
                     <th>City</th>
                     <th>Zip</th>
+					<th>Data</th>
                     <th>Ação</th>
                 </tr>
             </thead>
@@ -70,6 +74,26 @@
 </body>
 <script type="text/javascript">
 $(document).ready(function() {
+
+	// Configura ordenação das colunas tipo data (date-uk)
+	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+		"date-uk-pre": function ( a ) {
+			if (a == null || a == "") {
+				return 0;
+			}
+			var ukDatea = a.split('/');
+			return (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+		},
+	 
+		"date-uk-asc": function ( a, b ) {
+			return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+		},
+	 
+		"date-uk-desc": function ( a, b ) {
+			return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+		}
+	} );
+
     // Oculta mensagem de alerta do Datatable
     //$.fn.dataTable.ext.errMode = 'none';
     var table = $('#example').DataTable( {
@@ -115,7 +139,7 @@ $(document).ready(function() {
                 text: 'Copiar tabela', // Altera o texto do botão
                 exportOptions: { // Opções ao executar ação
                     // Define as colunas que participarão da ação
-                    columns: [1,2,3,4,5], // Exemplo: columns: [ 1,2,3 : ':visible'] ou columns: [ 1,2,3 ] ou columns: ':visible'
+                    columns: [1,2,3,4,5,6], // Exemplo: columns: [ 1,2,3 : ':visible'] ou columns: [ 1,2,3 ] ou columns: ':visible'
                     modifier: { // Modificações antes da ação
                         selected: null // Possibilita que todas as linhas seja copiadas ou somente as selecionadas
                     }
@@ -127,7 +151,7 @@ $(document).ready(function() {
                 text: 'Exportar excel', // Nomeia o botão
                 filename: 'relatorio', // Define o nome do arquivo que será exportado
                 exportOptions: {
-                    columns: [1,2,3,4,5],
+                    columns: [1,2,3,4,5,6],
                     modifier: {
                         selected: null
                     }
@@ -138,7 +162,7 @@ $(document).ready(function() {
                 text: 'Exportar PDF',
                 filename: 'tabela',
                 exportOptions: {
-                    columns: [1,2,3,4,5],
+                    columns: [1,2,3,4,5,6],
                     modifier: {
                         selected: null
                     }
@@ -148,7 +172,7 @@ $(document).ready(function() {
                 extend: 'print', // Define botão de imprimir
                 text:'Imprimir',
                 exportOptions: {
-                    columns: [1,2,3,4,5],
+                    columns: [1,2,3,4,5,6],
                     modifier: {
                         selected: null
                     }
@@ -200,9 +224,16 @@ $(document).ready(function() {
             data: 'zip',
             className: 'dt-body-center' // Centraliza o conteúdo da TD
          },
+		 {
+            targets: 6,
+            data: 'data',
+			type: 'date-uk', // Define campo do tipo data para ordenação correta
+            className: 'dt-body-center' // Centraliza o conteúdo da TD
+         },
          {
-            'targets': 6,
+            targets: 7,
             data:   'id',
+			orderable: false, // Habilita ou desabilita ordenação da coluna
             render: function ( data, type, row ) { 
                 if ( type === 'display' ) {
                     return '<a href="#" idEdit="'+data+'" class="editar">Editar</a><a idDel="'+data+'" titulo="'+row.first_name+'" href="#" class="apagar">Apagar</a>';
